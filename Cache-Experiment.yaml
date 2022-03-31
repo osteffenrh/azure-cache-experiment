@@ -1,12 +1,13 @@
 variables:
   CACHE_FOLDER: $(Pipeline.Workspace)/.cache
 
+pool:
+  vmImage: 'ubuntu-20.04'
+
 stages:
   - stage: prepare
     jobs:
       - job: Update_Cache
-        pool:
-          vmImage: 'ubuntu-20.04'
         steps:
           - bash: echo "##vso[task.setvariable variable=CACHE_NAME;]some-value"
             displayName: Set Cache Name
@@ -27,8 +28,6 @@ stages:
       CACHE_NAME: $[dependencies.prepare.outputs['Update_Cache.CacheName.CACHE_NAME']
     jobs:
       - job: Check_Cache_1
-        pool:
-          vmImage: 'ubuntu-20.04'
         steps:
           - task: Cache@2
             inputs:
@@ -41,8 +40,6 @@ stages:
               ls -laR $(CACHE_FOLDER)
               cat $(CACHE_FOLDER)/file1
       - job: Check_Cache_2
-        pool:
-          vmImage: 'ubuntu-20.04'
         steps:
           - task: Cache@2
             inputs:
