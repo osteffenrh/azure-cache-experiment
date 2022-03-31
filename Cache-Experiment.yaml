@@ -1,0 +1,40 @@
+variables:
+  CACHE_FOLDER: $(Pipeline.Workspace)/.cache
+
+stages:
+  - stage: prepare
+    jobs:
+      - job: Update_Cache
+        steps:
+          - task: Cache@2
+            inputs:
+              key: mycahce1
+              path: $(CACHE_FOLDER)
+              cacheHitVar: CACHE_RESTORED_1
+          - script: echo $(CACHE_RESTORED_1)
+          - bash: ls -laR $(CACHE_FOLDER)
+          - bash: echo "$(date)" >> $(CACHE_FOLDER)/file1
+  - stage: run
+    jobs:
+      - job: Check_Cache_1
+        steps:
+          - task: Cache@2
+            inputs:
+              key: mycahce1
+              path: $(CACHE_FOLDER)
+              cacheHitVar: CACHE_RESTORED_1
+          - script: echo $(CACHE_RESTORED_1)
+          - bash: ls -laR $(CACHE_FOLDER)
+          - bash: cat $(CACHE_FOLDER)/file1
+      - job: Check_Cache_2
+        steps:
+          - task: Cache@2
+            inputs:
+              key: mycahce1
+              path: $(CACHE_FOLDER)
+              cacheHitVar: CACHE_RESTORED_1
+          - script: echo $(CACHE_RESTORED_1)
+          - bash: ls -laR $(CACHE_FOLDER)
+          - bash: cat $(CACHE_FOLDER)/file1
+
+
