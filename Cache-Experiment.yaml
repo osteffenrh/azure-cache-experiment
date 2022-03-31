@@ -5,35 +5,42 @@ stages:
   - stage: prepare
     jobs:
       - job: Update_Cache
+        pool:
+          vmImage: 'ubuntu-20.04'
         steps:
           - task: Cache@2
             inputs:
               key: mycahce1
               path: $(CACHE_FOLDER)
               cacheHitVar: CACHE_RESTORED_1
-          - script: echo $(CACHE_RESTORED_1)
+          - bash: echo $(CACHE_RESTORED_1)
+          - bash: mkdir -p $(CACHE_FOLDER)
           - bash: ls -laR $(CACHE_FOLDER)
           - bash: echo "$(date)" >> $(CACHE_FOLDER)/file1
   - stage: run
     jobs:
       - job: Check_Cache_1
+        pool:
+          vmImage: 'ubuntu-20.04'
         steps:
           - task: Cache@2
             inputs:
               key: mycahce1
               path: $(CACHE_FOLDER)
               cacheHitVar: CACHE_RESTORED_1
-          - script: echo $(CACHE_RESTORED_1)
+          - bash: echo $(CACHE_RESTORED_1)
           - bash: ls -laR $(CACHE_FOLDER)
           - bash: cat $(CACHE_FOLDER)/file1
       - job: Check_Cache_2
+        pool:
+          vmImage: 'ubuntu-20.04'
         steps:
           - task: Cache@2
             inputs:
               key: mycahce1
               path: $(CACHE_FOLDER)
               cacheHitVar: CACHE_RESTORED_1
-          - script: echo $(CACHE_RESTORED_1)
+          - bash: echo $(CACHE_RESTORED_1)
           - bash: ls -laR $(CACHE_FOLDER)
           - bash: cat $(CACHE_FOLDER)/file1
 
