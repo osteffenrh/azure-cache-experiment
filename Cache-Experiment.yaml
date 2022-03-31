@@ -1,5 +1,6 @@
 variables:
   CACHE_FOLDER: $(Pipeline.Workspace)/.cache
+  CACHE_NAME: aadc
 
 pool:
   vmImage: 'ubuntu-20.04'
@@ -9,9 +10,6 @@ stages:
     jobs:
       - job: Update_Cache
         steps:
-          - bash: echo "##vso[task.setvariable variable=CACHE_NAME;]some-value"
-            displayName: Set Cache Name
-            name: CacheName
           - task: Cache@2
             inputs:
               key: $(CACHE_NAME)
@@ -24,8 +22,6 @@ stages:
               ls -laR $(CACHE_FOLDER)
               echo "$(date)" >> $(CACHE_FOLDER)/file1
   - stage: run
-    variables:
-      CACHE_NAME: $[dependencies.prepare.outputs['Update_Cache.CacheName.CACHE_NAME']
     jobs:
       - job: Check_Cache_1
         steps:
